@@ -1,0 +1,122 @@
+{
+  "base_rate_per_pound": 0.75,
+  "transportation_matrix": {
+    "description": "Weight-distance based transportation rates (CapRelo style)",
+    "weight_brackets": [
+      {"min": 0, "max": 1000, "label": "0-1,000 lbs"},
+      {"min": 1001, "max": 3000, "label": "1,001-3,000 lbs"},
+      {"min": 3001, "max": 5000, "label": "3,001-5,000 lbs"},
+      {"min": 5001, "max": 7000, "label": "5,001-7,000 lbs"},
+      {"min": 7001, "max": 10000, "label": "7,001-10,000 lbs"},
+      {"min": 10001, "max": 15000, "label": "10,001-15,000 lbs"},
+      {"min": 15001, "max": 999999, "label": "15,001+ lbs"}
+    ],
+    "distance_brackets": [
+      {"min": 0, "max": 100, "label": "0-100 miles"},
+      {"min": 101, "max": 250, "label": "101-250 miles"},
+      {"min": 251, "max": 500, "label": "251-500 miles"},
+      {"min": 501, "max": 1000, "label": "501-1,000 miles"},
+      {"min": 1001, "max": 1500, "label": "1,001-1,500 miles"},
+      {"min": 1501, "max": 2500, "label": "1,501-2,500 miles"},
+      {"min": 2501, "max": 999999, "label": "2,501+ miles"}
+    ],
+    "rates": [
+      [450, 650, 1200, 2400, 3200, 4800, 6500],
+      [950, 1350, 2400, 4200, 5800, 8200, 11000],
+      [1450, 2100, 3600, 6000, 8500, 11500, 15500],
+      [1950, 2850, 4800, 7800, 11000, 14800, 20000],
+      [2850, 4200, 6800, 10800, 15200, 20500, 27500],
+      [4200, 6200, 9800, 15500, 21800, 29500, 39500],
+      [5800, 8500, 13500, 21500, 30000, 40500, 54000]
+    ]
+  },
+  "service_multipliers": {
+    "full_pack": 1.35,
+    "partial_pack": 1.15,
+    "self_pack": 1.0,
+    "storage_30days": 1.20,
+    "storage_60days": 1.35,
+    "no_storage": 1.0
+  },
+  "weight_tiers": [
+    {"max_pounds": 1000, "rate_adjustment": 1.0},
+    {"max_pounds": 3000, "rate_adjustment": 0.95},
+    {"max_pounds": 5000, "rate_adjustment": 0.90},
+    {"max_pounds": 10000, "rate_adjustment": 0.85},
+    {"max_pounds": 999999, "rate_adjustment": 0.80}
+  ],
+  "note": "Weight tiers now apply to material costs only. Transportation uses the matrix above.",
+  "regional_adjustments": {
+    "northeast": 1.15,
+    "southeast": 1.05,
+    "midwest": 1.0,
+    "southwest": 1.10,
+    "west": 1.20,
+    "default": 1.0
+  },
+  "fuel_surcharge": 0.12,
+  "insurance_rate_per_1000": 5.00,
+  "minimum_charge": 500.00,
+  "tariffs": {
+    "enable_interstate_tariffs": true,
+    "interstate_tariff_rate": 0.03,
+    "intrastate_tariff_rate": 0.0,
+    "state_specific_taxes": {
+      "AL": 0.04,
+      "AZ": 0.056,
+      "AR": 0.065,
+      "CA": 0.0725,
+      "CO": 0.029,
+      "CT": 0.0635,
+      "FL": 0.06,
+      "GA": 0.04,
+      "HI": 0.04,
+      "ID": 0.06,
+      "IL": 0.0625,
+      "IN": 0.07,
+      "IA": 0.06,
+      "KS": 0.065,
+      "KY": 0.06,
+      "LA": 0.0445,
+      "ME": 0.055,
+      "MD": 0.06,
+      "MA": 0.0625,
+      "MI": 0.06,
+      "MN": 0.06875,
+      "MS": 0.07,
+      "MO": 0.04225,
+      "NE": 0.055,
+      "NV": 0.0685,
+      "NJ": 0.06625,
+      "NM": 0.05125,
+      "NY": 0.04,
+      "NC": 0.0475,
+      "ND": 0.05,
+      "OH": 0.0575,
+      "OK": 0.045,
+      "PA": 0.06,
+      "RI": 0.07,
+      "SC": 0.06,
+      "SD": 0.045,
+      "TN": 0.07,
+      "TX": 0.0625,
+      "UT": 0.0485,
+      "VT": 0.06,
+      "VA": 0.053,
+      "WA": 0.065,
+      "WV": 0.06,
+      "WI": 0.05,
+      "WY": 0.04,
+      "DC": 0.06
+    },
+    "state_tax_note": "Updated December 2025 - State sales tax rates on moving/transportation services. Some states exempt moving services from sales tax (AK, DE, MT, NH, OR). Rates shown are base state rates; local taxes may apply.",
+    "international_tariffs": {
+      "US_to_CA": 0.0,
+      "US_to_MX": 0.0,
+      "CA_to_US": 0.0,
+      "MX_to_US": 0.0
+    },
+    "international_tariff_note": "As of December 2025, USMCA (United States-Mexico-Canada Agreement) provides duty-free movement for household goods relocations. Commercial tariffs do not apply to personal household goods moves. Customs fees and broker fees may apply separately.",
+    "tariff_description": "State-specific sales taxes on moving services (updated December 2025)"
+  }
+}
