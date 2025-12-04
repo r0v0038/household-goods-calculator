@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Upload - Household Goods Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bulk.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="page-nav" role="navigation" aria-label="Main navigation">
+            <a href="/" class="nav-link">📊 Single Calculator</a>
+            <a href="/bulk" class="nav-link active" aria-current="page">📁 Bulk Upload</a>
+        </nav>
+
+        <h1>📁 Bulk Upload Calculator</h1>
+        <p class="subtitle">Upload an Excel file to calculate costs for multiple moves at once</p>
+
+        <!-- Advanced Settings Toggle -->
+        <div class="settings-toggle" onclick="toggleSettings()" role="button" tabindex="0" aria-expanded="false" aria-controls="advancedSettings">
+            <h3>⚙️ Advanced Rate Settings</h3>
+            <span class="toggle-icon" id="toggleIcon">▼</span>
+        </div>
+
+        <div class="settings-content" id="advancedSettings" aria-label="Advanced Settings">
+            <div style="padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 15px; border-radius: 4px;">
+                <strong>ℹ️ What these settings mean:</strong>
+                <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+                    <li><strong>Percentages (%):</strong> Service multipliers applied to base cost (100% = no change, 135% = +35% markup)</li>
+                    <li><strong>Insurance ($):</strong> Dollar amount charged per 1,000 lbs of household goods</li>
+                    <li><strong>Fuel Surcharge (%):</strong> Percentage of regional cost added to cover fuel expenses</li>
+                    <li><strong>Minimum Charge ($):</strong> Lowest amount charged, even if calculation is less</li>
+                </ul>
+            </div>
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label for="selfPackRate">Self Pack Rate (%) *</label>
+                    <input type="number" id="selfPackRate" value="100" min="50" max="200" step="5" aria-describedby="selfPackHelp">
+                    <p class="info-text" id="selfPackHelp">Baseline rate when customer packs their own items (100% = no markup)</p>
+                </div>
+                <div class="setting-item">
+                    <label for="partialPackRate">Partial Pack Rate (%) *</label>
+                    <input type="number" id="partialPackRate" value="115" min="50" max="200" step="5" aria-describedby="partialPackHelp">
+                    <p class="info-text" id="partialPackHelp">Multiplier when we pack some items (115% = +15% cost increase)</p>
+                </div>
+                <div class="setting-item">
+                    <label for="fullPackRate">Full Pack Rate (%) *</label>
+                    <input type="number" id="fullPackRate" value="135" min="50" max="200" step="5" aria-describedby="fullPackHelp">
+                    <p class="info-text" id="fullPackHelp">Multiplier when we pack everything (135% = +35% cost increase)</p>
+                </div>
+                <div class="setting-item">
+                    <label for="noStorageRate">No Storage Rate (%) *</label>
+                    <input type="number" id="noStorageRate" value="100" min="50" max="200" step="5" aria-describedby="noStorageHelp">
+                    <p class="info-text" id="noStorageHelp">Baseline when no storage needed (100% = no additional charge)</p>
+                </div>
+                <div class="setting-item">
+                    <label for="storage30Rate">30 Days Storage (%) *</label>
+                    <input type="number" id="storage30Rate" value="120" min="50" max="200" step="5" aria-describedby="storage30Help">
+                    <p class="info-text" id="storage30Help">Multiplier for 30-day storage (120% = +20% cost increase)</p>
+                </div>
+                <div class="setting-item">
+                    <label for="storage60Rate">60 Days Storage (%) *</label>
+                    <input type="number" id="storage60Rate" value="135" min="50" max="200" step="5" aria-describedby="storage60Help">
+                    <p class="info-text" id="storage60Help">Multiplier for 60-day storage (135% = +35% cost increase)</p>
+                </div>
+                <div class="setting-item">
+                    <label for="insuranceRate">Insurance per $1000 lbs ($) *</label>
+                    <input type="number" id="insuranceRate" value="5.00" min="1" max="50" step="0.50" aria-describedby="insuranceHelp">
+                    <p class="info-text" id="insuranceHelp">Cost per 1,000 lbs of weight (e.g., 5,000 lbs × $5 = $25 insurance)</p>
+                </div>
+                <div class="setting-item">
+                    <label for="fuelSurcharge">Fuel Surcharge (%) *</label>
+                    <input type="number" id="fuelSurcharge" value="12" min="0" max="50" step="1" aria-describedby="fuelHelp">
+                    <p class="info-text" id="fuelHelp">Percentage added to cover fuel costs (12% of regional cost)</p>
+                </div>
+                <div class="setting-item">
+                    <label for="minimumCharge">Minimum Charge ($) *</label>
+                    <input type="number" id="minimumCharge" value="500" min="0" max="2000" step="50" aria-describedby="minChargeHelp">
+                    <p class="info-text" id="minChargeHelp">Minimum fee charged for any move, regardless of calculation</p>
+                </div>
+                <div class="setting-item">
+                    <label for="discountRate">Discount (%) *</label>
+                    <input type="number" id="discountRate" value="0" min="0" max="50" step="0.5" aria-describedby="discountHelp">
+                    <p class="info-text" id="discountHelp">Percentage discount applied to subtotal (excludes fuel surcharge and tariffs)</p>
+                </div>
+            </div>
+            <button type="button" class="reset-btn" onclick="resetSettings()">Reset to Defaults</button>
+        </div>
+
+        <!-- Instructions Section -->
+        <div class="info-box">
+            <h3>📋 How to Use Bulk Upload</h3>
+            <ol>
+                <li><strong>Download Template:</strong> Click the button below to get our Excel template</li>
+                <li><strong>Fill in Your Data:</strong> Add your move details (origin, destination, weight, etc.)</li>
+                <li><strong>Upload File:</strong> Select and upload your completed Excel file</li>
+                <li><strong>Review & Download:</strong> View results and download the detailed Excel report</li>
+            </ol>
+            
+            <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 4px;">
+                <strong>📌 Required Columns:</strong> origin, destination, weight<br>
+                <strong>📌 Optional Columns:</strong> distance_miles, packing_service, storage_option, include_insurance
+            </div>
+        </div>
+
+        <!-- Template Download -->
+        <div class="action-section">
+            <h2>Step 1: Download Template</h2>
+            <button onclick="downloadTemplate()" class="template-btn">
+                ⬇️ Download Excel Template
+            </button>
+            <p class="info-text">Get a pre-formatted Excel file with example data and instructions</p>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="action-section">
+            <h2>Step 2: Upload Your File</h2>
+            
+            <div class="upload-area" id="uploadArea" role="button" tabindex="0" aria-label="Click to upload file or drag and drop">
+                <input 
+                    type="file" 
+                    id="fileInput" 
+                    accept=".xlsx,.xls" 
+                    hidden
+                    aria-label="Excel file input"
+                >
+                <div class="upload-content">
+                    <div class="upload-icon">📄</div>
+                    <p class="upload-text">Click to select file or drag & drop</p>
+                    <p class="upload-subtext">Excel files only (.xlsx, .xls) - Max 16MB</p>
+                </div>
+            </div>
+
+            <div id="fileInfo" class="file-info" style="display: none;">
+                <div class="file-details">
+                    <span class="file-name" id="fileName"></span>
+                    <button onclick="clearFile()" class="clear-btn" aria-label="Clear selected file">✕</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Validation Results -->
+        <div id="validationResults" class="validation-section" style="display: none;" role="status" aria-live="polite">
+            <h3>✓ Validation Results</h3>
+            <div id="validationContent"></div>
+        </div>
+
+        <!-- Process Button -->
+        <div class="action-section" id="processSection" style="display: none;">
+            <button onclick="processFile()" id="processBtn" class="process-btn">
+                🚀 Process Calculations
+            </button>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div id="progressSection" class="progress-section" style="display: none;" role="status" aria-live="polite">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text" id="progressText">Processing your file...</p>
+        </div>
+
+        <!-- Error Messages -->
+        <div class="error-message" id="errorMessage" role="alert" aria-live="assertive"></div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="results-section" style="display: none;" role="region" aria-label="Calculation results">
+            <h2>📊 Calculation Results</h2>
+            
+            <!-- Summary Stats -->
+            <div class="summary-stats" id="summaryStats"></div>
+
+            <!-- Results Table -->
+            <div class="results-table-container">
+                <table class="results-table" id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Row</th>
+                            <th>Status</th>
+                            <th>Origin</th>
+                            <th>Destination</th>
+                            <th>Distance</th>
+                            <th>Weight</th>
+                            <th>Total Cost</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Download Button -->
+            <div class="download-section">
+                <button onclick="downloadResults()" class="download-btn">
+                    ⬇️ Download Detailed Excel Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='bulk.js') }}"></script>
+</body>
+</html>
